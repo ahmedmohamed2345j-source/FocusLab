@@ -1,0 +1,2456 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #0f172a;
+    color: #f8fafc;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    border: 0;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+/* =========================
+   SCROLLBAR
+   Themed to match the site instead of the browser's default
+   grey/silver bar.
+========================= */
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #1e40af rgba(255,255,255,.05);
+}
+
+::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255,255,255,.05);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1e40af;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #2563eb;
+}
+
+
+/* =========================
+   HOME
+========================= */
+
+.home-page {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 10% 10%, rgba(59, 130, 246, .12), transparent 30%),
+        radial-gradient(circle at 90% 80%, rgba(37, 99, 235, .12), transparent 30%),
+        #0f172a;
+}
+
+.home-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.home-header,
+.tasks-header {
+    height: 78px;
+    padding: 0 34px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    border-bottom: 1px solid rgba(255,255,255,.07);
+    background: rgba(15,23,42,.88);
+    backdrop-filter: blur(18px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -.4px;
+}
+
+.brand-mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg,#2563eb,#60a5fa);
+    color: white;
+    font-size: 13px;
+    font-weight: 900;
+    box-shadow: 0 8px 25px rgba(37,99,235,.28);
+}
+
+.home-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.home-nav a {
+    padding: 10px 15px;
+    border-radius: 10px;
+    color: #94a3b8;
+    transition: .2s;
+}
+
+.home-nav a:hover,
+.home-nav a.active {
+    color: white;
+    background: rgba(255,255,255,.06);
+}
+
+.home-user,
+.header-avatar {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.home-user img,
+.header-avatar img {
+    width: 39px;
+    height: 39px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(96,165,250,.45);
+}
+
+.home-user span {
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+.home-main {
+    max-width: 1120px;
+    margin: auto;
+    padding: 80px 25px;
+    flex: 1;
+    width: 100%;
+}
+
+.hero-section {
+    min-height: 430px;
+    display: flex;
+    align-items: center;
+}
+
+.hero-small-title,
+.section-kicker,
+.timer-label,
+.break-small-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: 800;
+    color: #60a5fa;
+}
+
+.hero-content h1 {
+    margin-top: 18px;
+    font-size: clamp(48px, 7vw, 86px);
+    line-height: .98;
+    letter-spacing: -4px;
+}
+
+.hero-content h1 span {
+    color: #60a5fa;
+}
+
+.hero-content p {
+    max-width: 590px;
+    color: #94a3b8;
+    font-size: 17px;
+    line-height: 1.7;
+    margin-top: 25px;
+}
+
+.hero-buttons {
+    margin-top: 30px;
+}
+
+.primary-button,
+.add-task-button,
+.modal-submit-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 13px 20px;
+    border-radius: 12px;
+    background: #2563eb;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.primary-button:hover,
+.add-task-button:hover,
+.modal-submit-button:hover {
+    background: #3b82f6;
+    transform: translateY(-2px);
+}
+
+.home-search-section {
+    margin-top: 30px;
+    padding: 34px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 22px;
+    background: rgba(255,255,255,.025);
+}
+
+.search-heading h2 {
+    font-size: 28px;
+    margin-top: 7px;
+}
+
+.search-heading p {
+    color: #64748b;
+    margin-top: 5px;
+}
+
+.home-search-wrapper {
+    position: relative;
+    margin-top: 22px;
+}
+
+.home-search-icon {
+    position: absolute;
+    left: 17px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 21px;
+    color: #64748b;
+    z-index: 2;
+}
+
+.home-search-input {
+    width: 100%;
+    height: 58px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.08);
+    background: rgba(2,6,23,.65);
+    color: white;
+    padding: 0 18px 0 50px;
+    outline: none;
+    transition: .2s;
+}
+
+.home-search-input:focus {
+    border-color: rgba(59,130,246,.7);
+    box-shadow: 0 0 0 4px rgba(37,99,235,.08);
+}
+
+.home-task-search-suggestions {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: #111c31;
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 15px;
+    padding: 7px;
+    z-index: 200;
+    box-shadow: 0 20px 50px rgba(0,0,0,.35);
+}
+
+.home-task-search-suggestions.active {
+    display: block;
+}
+
+.home-search-result {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 11px;
+    background: transparent;
+    color: white;
+    text-align: left;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.home-search-result:hover {
+    background: rgba(59,130,246,.12);
+}
+
+.home-search-result-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    background: rgba(59,130,246,.1);
+    color: #60a5fa;
+}
+
+.home-search-result-text {
+    overflow: hidden;
+}
+
+.home-search-result-text strong {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.home-search-result-text small {
+    color: #64748b;
+}
+
+.home-cards {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 18px;
+    margin-top: 24px;
+}
+
+.home-card {
+    padding: 23px;
+    border-radius: 18px;
+    background: rgba(255,255,255,.025);
+    border: 1px solid rgba(255,255,255,.07);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: .2s;
+}
+
+.home-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(96,165,250,.25);
+}
+
+.home-card-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    background: rgba(59,130,246,.1);
+    color: #60a5fa;
+    display: grid;
+    place-items: center;
+}
+
+.home-card-icon svg {
+    width: 25px;
+    height: 25px;
+}
+
+.home-card h3 {
+    font-size: 16px;
+}
+
+.home-card p {
+    color: #64748b;
+    font-size: 13px;
+    margin-top: 3px;
+}
+
+
+/* =========================
+   TASKS APP
+========================= */
+
+.tasks-app-screen {
+    min-height: 100vh;
+    background-color: #0f172a;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+}
+
+.tasks-header {
+    padding-left: 20px;
+}
+
+.burger-btn {
+    width: 43px;
+    height: 43px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+}
+
+.burger-btn span {
+    width: 19px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 5px;
+}
+
+.tasks-search {
+    margin-left: auto;
+    width: min(400px, 42vw);
+    position: relative;
+}
+
+.tasks-search svg {
+    width: 20px;
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+}
+
+.tasks-search input {
+    width: 100%;
+    height: 43px;
+    padding: 0 15px 0 44px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 11px;
+    background: rgba(255,255,255,.035);
+    color: white;
+    outline: none;
+}
+
+.tasks-search input:focus {
+    border-color: rgba(96,165,250,.5);
+}
+
+.sidebar {
+    width: 260px;
+    position: fixed;
+    left: 0;
+    top: 78px;
+    bottom: 0;
+    z-index: 90;
+    padding: 23px 16px;
+    background: rgba(8,15,29,.96);
+    border-right: 1px solid rgba(255,255,255,.06);
+    overflow-y: auto;
+    transition: .25s;
+}
+
+.sidebar.closed {
+    transform: translateX(-100%);
+}
+
+.sidebar-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 5px 7px 18px;
+}
+
+.sidebar-avatar {
+    width: 43px;
+    height: 43px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.sidebar-user strong {
+    display: block;
+    font-size: 14px;
+}
+
+.sidebar-user span {
+    display: block;
+    margin-top: 3px;
+    font-size: 11px;
+    color: #64748b;
+}
+
+.sidebar-divider {
+    height: 1px;
+    background: rgba(255,255,255,.06);
+    margin: 12px 4px;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.sidebar-item,
+.filter-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-height: 46px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    color: #94a3b8;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    transition: .2s;
+}
+
+.sidebar-item svg,
+.filter-icon svg {
+    width: 21px;
+    height: 21px;
+}
+
+.sidebar-item:hover,
+.sidebar-item.active,
+.filter-item:hover,
+.filter-item.active {
+    color: white;
+    background: rgba(59,130,246,.1);
+}
+
+.sidebar-button {
+    font-weight: 500;
+}
+
+.filter-title {
+    color: #475569;
+    font-size: 10px;
+    letter-spacing: 1.7px;
+    font-weight: 800;
+    padding: 10px 12px;
+}
+
+.filter-item {
+    min-height: 43px;
+}
+
+.filter-icon {
+    width: 27px;
+    height: 27px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    background: rgba(255,255,255,.035);
+}
+
+.filter-item.active .filter-icon {
+    background: rgba(59,130,246,.13);
+    color: #60a5fa;
+}
+
+.tasks-main {
+    min-height: calc(100vh - 78px);
+    margin-left: 260px;
+    padding: 45px 30px;
+    max-width: 1120px;
+    background: transparent !important;
+    flex: 1;
+}
+
+.tasks-heading-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+}
+
+.tasks-heading-row h1 {
+    font-size: 38px;
+    letter-spacing: -1.5px;
+    margin-top: 7px;
+}
+
+.tasks-heading-row p {
+    color: #64748b;
+    margin-top: 5px;
+}
+
+.task-actions {
+    display: flex;
+    gap: 9px;
+}
+
+.delete-all-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 15px;
+    border-radius: 11px;
+    background: rgba(239,68,68,.08);
+    color: #f87171;
+    border: 1px solid rgba(239,68,68,.18);
+    cursor: pointer;
+    font-weight: 700;
+    transition: .2s;
+}
+
+.delete-all-button svg {
+    width: 18px;
+    height: 18px;
+}
+
+.delete-all-button:hover {
+    background: #dc2626;
+    color: white;
+}
+
+.add-task-button svg {
+    width: 19px;
+    height: 19px;
+}
+
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px;
+    min-height: 84px;
+    border-radius: 17px;
+    border: 1px solid rgba(255,255,255,.065);
+    background: rgba(15,23,42,.78);
+    backdrop-filter: blur(10px);
+    transition: .25s;
+}
+
+.task-item:hover {
+    border-color: rgba(96,165,250,.2);
+    transform: translateY(-1px);
+}
+
+.task-item.completed {
+    opacity: .58;
+}
+
+.task-item.completed .task-name {
+    text-decoration: line-through;
+}
+
+.task-check-button {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1.5px solid #475569;
+    color: transparent;
+    background: transparent;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.task-check-button:hover {
+    border-color: #60a5fa;
+}
+
+.task-item.completed .task-check-button {
+    background: #22c55e;
+    border-color: #22c55e;
+    color: white;
+}
+
+.task-check-button svg {
+    width: 19px;
+    height: 19px;
+}
+
+.task-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.task-name {
+    font-weight: 700;
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.task-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 7px;
+}
+
+.task-priority {
+    padding: 4px 8px;
+    border-radius: 7px;
+    font-size: 10px;
+    font-weight: 800;
+    background: rgba(255,255,255,.05);
+    color: #94a3b8;
+}
+
+.task-priority.important {
+    color: #fbbf24;
+    background: rgba(245,158,11,.08);
+}
+
+.task-priority.study {
+    color: #a78bfa;
+    background: rgba(139,92,246,.08);
+}
+
+.task-focus-label {
+    color: #64748b;
+    font-size: 11px;
+}
+
+.task-timer-btn {
+    min-width: 84px;
+    height: 39px;
+    padding: 0 12px;
+    border-radius: 10px;
+    background: rgba(59,130,246,.08);
+    border: 1px solid rgba(59,130,246,.18);
+    color: #60a5fa;
+    font-family: monospace;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.task-timer-btn:hover {
+    background: rgba(59,130,246,.15);
+}
+
+.task-timer-btn.timer-running {
+    color: #93c5fd;
+    border-color: rgba(96,165,250,.45);
+}
+
+.task-timer-btn.timer-finished {
+    color: #f87171;
+    border-color: rgba(239,68,68,.3);
+    background: rgba(239,68,68,.07);
+}
+
+.task-delete-btn {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(220,38,38,.07);
+    border: 1px solid rgba(248,113,113,.25);
+    color: #f87171;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.task-delete-btn:hover {
+    background: #dc2626;
+    color: white;
+}
+
+.task-delete-btn svg {
+    width: 17px;
+    height: 17px;
+}
+
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty-tasks-state {
+    display: none;
+    text-align: center;
+    padding: 100px 20px;
+}
+
+.empty-tasks-state.active {
+    display: block;
+}
+
+.empty-icon {
+    width: 72px;
+    height: 72px;
+    margin: auto;
+    border-radius: 22px;
+    background: rgba(59,130,246,.08);
+    color: #60a5fa;
+    display: grid;
+    place-items: center;
+}
+
+.empty-icon svg {
+    width: 35px;
+}
+
+.empty-tasks-state h2 {
+    margin-top: 18px;
+}
+
+.empty-tasks-state p {
+    color: #64748b;
+    margin-top: 6px;
+}
+
+.empty-tasks-state button {
+    margin-top: 22px;
+    padding: 11px 18px;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+}
+
+
+/* =========================
+   MODALS
+========================= */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0,0,0,.72);
+    backdrop-filter: blur(9px);
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-box {
+    width: min(470px,100%);
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 30px;
+    border-radius: 22px;
+    background: #111c31;
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow: 0 30px 80px rgba(0,0,0,.45);
+}
+
+.modal-close,
+.music-close {
+    position: absolute;
+    top: 17px;
+    right: 17px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    color: #94a3b8;
+    background: rgba(255,255,255,.05);
+    cursor: pointer;
+}
+
+.modal-icon {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    background: rgba(59,130,246,.1);
+    color: #60a5fa;
+}
+
+.modal-icon svg {
+    width: 25px;
+}
+
+.modal-box h2 {
+    margin-top: 17px;
+    font-size: 24px;
+}
+
+.modal-description {
+    color: #64748b;
+    margin-top: 5px;
+    margin-bottom: 25px;
+}
+
+.modal-box label {
+    display: block;
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 700;
+    margin: 15px 0 7px;
+}
+
+.modal-box input,
+.modal-box select {
+    width: 100%;
+    height: 47px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 10px;
+    background: #0b1324;
+    color: white;
+    outline: none;
+    padding: 0 13px;
+}
+
+.modal-box input:focus,
+.modal-box select:focus {
+    border-color: rgba(59,130,246,.55);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.input-with-unit {
+    position: relative;
+}
+
+.input-with-unit input {
+    padding-right: 45px;
+}
+
+.input-with-unit span {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 12px;
+}
+
+.modal-submit-button {
+    width: 100%;
+    margin-top: 24px;
+}
+
+
+/* =========================
+   FOCUS TIMER
+========================= */
+
+.timer-modal-overlay-pure {
+    position: fixed;
+    inset: 0;
+    z-index: 700;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: #030712;
+}
+
+.timer-modal-overlay-pure.active {
+    display: flex;
+}
+
+.timer-pure-close-btn {
+    position: absolute;
+    right: 30px;
+    top: 25px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.06);
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    z-index: 20;
+}
+
+/*
+ * The video player's own close button — same spot as the
+ * generic .timer-pure-close-btn, but raised a bit higher so
+ * the video never covers it, and drawn as a plain X (no
+ * circle background) per request.
+ */
+.video-close-x {
+    top: 14px;
+    right: 22px;
+    width: auto;
+    height: auto;
+    padding: 6px 8px;
+    border-radius: 8px;
+    background: transparent;
+    font-size: 30px;
+    font-weight: 300;
+    line-height: 1;
+    z-index: 30;
+    transition: .2s;
+}
+
+.video-close-x:hover {
+    color: #60a5fa;
+    transform: scale(1.12);
+}
+
+.timer-pure-content {
+    text-align: center;
+    padding: 30px;
+}
+
+.timer-pure-title {
+    font-size: clamp(25px,4vw,40px);
+    margin-top: 14px;
+    max-width: 700px;
+}
+
+.timer-pure-big-number {
+    margin-top: 35px;
+    font-family: monospace;
+    font-size: clamp(80px,17vw,190px);
+    line-height: .9;
+    letter-spacing: -8px;
+    font-weight: 800;
+}
+
+.timer-status-text {
+    color: #64748b;
+    margin-top: 25px;
+}
+
+
+/* =========================
+   RESULT ANIMATION
+========================= */
+
+.task-result-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(2,6,23,.78);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .2s;
+}
+
+.task-result-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.task-result-animation {
+    text-align: center;
+    animation: resultContainer .55s ease both;
+}
+
+.task-result-circle {
+    width: 150px;
+    height: 150px;
+    margin: auto;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    animation: resultCircle .65s cubic-bezier(.17,.89,.32,1.4) both;
+}
+
+.task-result-circle svg {
+    width: 82px;
+    height: 82px;
+}
+
+.task-result-circle.success {
+    color: #22c55e;
+    background: rgba(34,197,94,.08);
+    border: 5px solid #22c55e;
+    box-shadow:
+        0 0 0 18px rgba(34,197,94,.05),
+        0 0 70px rgba(34,197,94,.25);
+}
+
+.task-result-circle.failure {
+    color: #ef4444;
+    background: rgba(239,68,68,.08);
+    border: 5px solid #ef4444;
+    box-shadow:
+        0 0 0 18px rgba(239,68,68,.05),
+        0 0 70px rgba(239,68,68,.22);
+}
+
+.task-result-animation h2 {
+    margin-top: 28px;
+    font-size: 31px;
+}
+
+.task-result-animation p {
+    margin-top: 7px;
+    color: #94a3b8;
+}
+
+@keyframes resultCircle {
+    0% {
+        transform: scale(.2);
+        opacity: 0;
+    }
+    65% {
+        transform: scale(1.12);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes resultContainer {
+    from {
+        transform: translateY(15px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+
+/* =========================
+   BREAK
+========================= */
+
+.break-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+}
+
+.break-overlay.active {
+    display: flex;
+}
+
+.break-skip-btn {
+    position: absolute;
+    right: 27px;
+    top: 24px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.08);
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.break-content {
+    text-align: center;
+}
+
+.break-content h1 {
+    margin-top: 18px;
+    font-size: clamp(42px,7vw,75px);
+    letter-spacing: -2px;
+}
+
+.break-display {
+    margin-top: 30px;
+    font-family: monospace;
+    font-size: clamp(75px,14vw,160px);
+    font-weight: 800;
+    letter-spacing: -7px;
+}
+
+.break-content p {
+    color: #64748b;
+    margin-top: 15px;
+}
+
+.break-skip-button {
+    margin-top: 27px;
+    padding: 12px 20px;
+    border-radius: 11px;
+    background: #151515;
+    color: #cbd5e1;
+    border: 1px solid #292929;
+    cursor: pointer;
+}
+
+.break-skip-button:hover {
+    background: #202020;
+}
+
+
+/* =========================
+   BACKGROUNDS
+========================= */
+
+.background-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+    max-height: 360px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.background-option {
+    padding: 0;
+    height: 130px;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    background: transparent;
+    position: relative;
+}
+
+.background-option:hover {
+    border-color: #60a5fa;
+}
+
+.background-option img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.background-option.selected {
+    border-color: #60a5fa;
+}
+
+/* Background theme swatches — each shows a small preview
+   of the wallpaper it applies. */
+.theme-option.selected {
+    box-shadow: 0 0 0 3px rgba(96,165,250,.35) inset;
+}
+
+.reset-background-button {
+    width: 100%;
+    margin-top: 17px;
+    padding: 12px;
+    border-radius: 10px;
+    color: #94a3b8;
+    background: rgba(255,255,255,.05);
+    cursor: pointer;
+}
+
+
+/* =========================
+   MUSIC
+========================= */
+
+.music-panel {
+    position: fixed;
+    right: 20px;
+    top: 90px;
+    width: 300px;
+    padding: 24px;
+    border-radius: 17px;
+    background: #111c31;
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow: 0 25px 70px rgba(0,0,0,.4);
+    z-index: 450;
+    display: none;
+}
+
+.music-panel.active {
+    display: block;
+}
+
+.music-panel h3 {
+    font-size: 20px;
+}
+
+.music-panel p {
+    color: #64748b;
+    font-size: 13px;
+    margin-top: 4px;
+    margin-bottom: 17px;
+}
+
+.music-option {
+    width: 100%;
+    padding: 11px;
+    margin-top: 7px;
+    border-radius: 9px;
+    background: rgba(255,255,255,.05);
+    color: #cbd5e1;
+    cursor: pointer;
+}
+
+
+/* =========================
+   SEARCH HIGHLIGHT
+========================= */
+
+.task-item.task-search-highlight {
+    border-color: rgba(96,165,250,.7);
+    box-shadow: 0 0 0 4px rgba(59,130,246,.08);
+    animation: searchHighlight 1.2s ease 3;
+}
+
+@keyframes searchHighlight {
+    0%,100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.012);
+        box-shadow: 0 0 0 7px rgba(59,130,246,.08);
+    }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 800px) {
+
+    .home-header,
+    .tasks-header {
+        padding: 0 15px;
+        gap: 12px;
+    }
+
+    .home-nav {
+        display: none;
+    }
+
+    .home-user span {
+        display: none;
+    }
+
+    .tasks-search {
+        flex: 1;
+        min-width: 0;
+        margin-left: 0;
+    }
+
+    .mobile-header-nav {
+        display: flex;
+    }
+
+    .header-avatar {
+        display: none;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+        top: 78px;
+    }
+
+    .sidebar.open,
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .tasks-main {
+        margin-left: 0;
+        padding: 32px 16px;
+    }
+
+    .tasks-heading-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .task-actions {
+        width: 100%;
+    }
+
+    .task-actions button {
+        flex: 1;
+    }
+
+    .home-main {
+        padding: 45px 16px;
+    }
+
+    .hero-section {
+        min-height: auto;
+        padding: 30px 0;
+    }
+
+    .hero-content h1 {
+        font-size: 52px;
+        letter-spacing: -3px;
+    }
+
+    .home-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .task-item {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .task-info {
+        width: calc(100% - 55px);
+        flex: none;
+    }
+
+    .task-timer-btn {
+        margin-left: 53px;
+    }
+
+    .task-delete-btn {
+        margin-left: auto;
+    }
+
+    .nav-search-wrapper {
+        display: none;
+    }
+
+    .site-footer {
+        flex-direction: column;
+        gap: 22px;
+        text-align: center;
+        padding: 34px 20px;
+    }
+
+    .footer-social {
+        justify-content: center;
+    }
+
+    .video-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .video-player-box {
+        padding: 12px;
+    }
+
+    .video-task-search-overlay {
+        top: 12px;
+        left: 12px;
+        width: min(220px, 62vw);
+    }
+
+    #videoTaskSearchInput {
+        height: 38px;
+        font-size: 12px;
+    }
+
+    .video-active-task-card {
+        top: 12px;
+        width: calc(100vw - 24px);
+    }
+
+    .video-task-pin-header {
+        font-size: 10px;
+        padding: 8px 10px;
+    }
+
+    #videoActiveTaskItemHost .task-item {
+        padding: 10px;
+        flex-wrap: wrap;
+    }
+
+    #videoActiveTaskItemHost .task-timer-btn,
+    #videoActiveTaskItemHost .task-timer-toggle-btn {
+        display: none;
+    }
+
+    .timer-pure-close-btn {
+        right: 12px;
+        top: 12px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .video-close-x {
+        right: 12px;
+        top: 8px;
+        font-size: 26px;
+    }
+}
+
+@media (max-width: 500px) {
+
+    .brand span {
+        display: none;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-box {
+        padding: 23px;
+    }
+
+    .background-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .task-actions {
+        flex-direction: column;
+    }
+
+    .task-timer-btn {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+
+/* =========================================================
+   NEW ADDITIONS BELOW — nothing above this line was changed.
+========================================================= */
+
+
+/* =========================
+   SIGN IN PAGE
+========================= */
+
+html.is-guest .home-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+}
+
+/* Sign-in and home now live in the same file (index.html);
+   only one of the two is shown at a time, decided by whether
+   the person is signed in. Set as early as possible (inline,
+   in <head>) so there is no flash of the wrong view. */
+html.is-guest #homeAppView {
+    display: none;
+}
+
+html.is-signed-in #signinView {
+    display: none;
+}
+
+.signin-box {
+    width: min(480px, 100%);
+}
+
+.signin-logo-row {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-bottom: 6px;
+}
+
+.signin-logo-row span {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -.4px;
+}
+
+.signin-avatar-grid.background-grid .background-option {
+    border-radius: 50%;
+    aspect-ratio: 1 / 1;
+    width: 64px;
+    height: auto;
+    max-width: 64px;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.signin-avatar-grid.background-grid .background-option:focus,
+.signin-avatar-grid.background-grid .background-option:focus-visible {
+    outline: none;
+    box-shadow: none;
+}
+
+.signin-avatar-grid.background-grid .background-option img {
+    border: none;
+    outline: none;
+    display: block;
+}
+
+.signin-avatar-grid.background-grid {
+    grid-template-columns: repeat(auto-fit, 64px);
+    justify-content: center;
+    gap: 14px;
+}
+
+.signin-error {
+    display: none;
+    color: #f87171;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.signin-error.active {
+    display: block;
+}
+
+/* Hidden helper used to toggle the sign-in box vs. the home content
+   now that both live together in one file (index.html). */
+.view-hidden {
+    display: none !important;
+}
+
+
+/* =========================
+   HOME HEADER SEARCH BAR
+========================= */
+
+.nav-search-wrapper {
+    position: relative;
+    width: min(220px, 30vw);
+    margin-left: 14px;
+}
+
+/*
+ * Compact Home / Tasks / Videos icon buttons shown only in the
+ * header on mobile (where the sidebar and its links are tucked
+ * behind the burger menu). Hidden on desktop — see .home-nav
+ * and the sidebar for the equivalent desktop navigation.
+ */
+.mobile-header-nav {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.mobile-nav-btn {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    color: #94a3b8;
+    background: rgba(255,255,255,.05);
+    transition: .2s;
+}
+
+.mobile-nav-btn svg {
+    width: 19px;
+    height: 19px;
+}
+
+.mobile-nav-btn:hover,
+.mobile-nav-btn.active {
+    color: white;
+    background: rgba(59,130,246,.15);
+}
+
+.nav-search-wrapper .nav-search-icon {
+    left: 12px;
+    width: 17px;
+}
+
+.nav-search-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 14px 0 36px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,.08);
+    background: rgba(2,6,23,.65);
+    color: white;
+    outline: none;
+    transition: .2s;
+}
+
+.nav-search-input:focus {
+    border-color: rgba(59,130,246,.7);
+    box-shadow: 0 0 0 4px rgba(37,99,235,.08);
+}
+
+
+/* =========================
+   MUSIC SIDEBAR PANEL
+========================= */
+
+.sidebar.panel-hidden {
+    display: none;
+}
+
+.music-sidebar-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.music-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 40px;
+}
+
+.music-panel-header h3 {
+    font-size: 18px;
+}
+
+.music-panel-desc {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.music-hint {
+    color: #475569;
+    font-size: 11px;
+    margin-top: -4px;
+}
+
+.add-music-button {
+    padding: 11px;
+    border-radius: 10px;
+    background: rgba(59,130,246,.1);
+    border: 1px solid rgba(59,130,246,.25);
+    color: #60a5fa;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.add-music-button:hover {
+    background: rgba(59,130,246,.18);
+}
+
+.music-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.music-empty-text {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.music-list-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px;
+    border-radius: 10px;
+    background: rgba(255,255,255,.035);
+}
+
+/* Simple, beautiful round play / pause control:
+   a circle holding either a triangle (play) or two bars (pause). */
+.music-item-play-btn {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#2563eb,#60a5fa);
+    color: white;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(37,99,235,.35);
+    transition: .2s;
+}
+
+.music-item-play-btn:hover {
+    transform: scale(1.06);
+    box-shadow: 0 8px 20px rgba(37,99,235,.45);
+}
+
+.music-item-play-btn svg {
+    width: 13px;
+    height: 13px;
+}
+
+.music-item-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.music-item-permanent-badge {
+    flex-shrink: 0;
+    padding: 3px 7px;
+    border-radius: 6px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+    color: #60a5fa;
+    background: rgba(59,130,246,.1);
+}
+
+.music-item-delete-btn {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(220,38,38,.08);
+    color: #f87171;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.music-stop-button {
+    padding: 11px;
+    border-radius: 10px;
+    background: rgba(239,68,68,.08);
+    border: 1px solid rgba(239,68,68,.18);
+    color: #f87171;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.music-stop-button:hover {
+    background: #dc2626;
+    color: white;
+}
+
+
+/* =========================
+   TASK TIMER PLAY/PAUSE BUTTON
+========================= */
+
+.task-timer-toggle-btn {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(59,130,246,.08);
+    border: 1px solid rgba(59,130,246,.18);
+    color: #60a5fa;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.task-timer-toggle-btn:hover {
+    background: rgba(59,130,246,.15);
+}
+
+.task-timer-toggle-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+
+/* =========================
+   SITE FOOTER
+========================= */
+
+.site-footer {
+    margin-top: auto;
+    border-top: 1px solid rgba(255,255,255,.07);
+    background: rgba(8,15,29,.85);
+    backdrop-filter: blur(14px);
+    padding: 30px 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-brand-mark {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg,#2563eb,#60a5fa);
+    color: white;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.footer-brand-text {
+    font-weight: 800;
+    font-size: 14px;
+}
+
+.verified-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(96,165,250,.14);
+    color: #60a5fa;
+    font-size: 12px;
+    font-weight: 300;
+    font-family: Georgia, "Times New Roman", serif;
+    flex-shrink: 0;
+}
+
+.footer-credit {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #94a3b8;
+    font-size: 13px;
+    text-align: center;
+}
+
+.footer-credit strong {
+    color: #e2e8f0;
+    font-weight: 700;
+}
+
+.footer-social {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-social a {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(255,255,255,.05);
+    color: #94a3b8;
+    transition: .2s;
+}
+
+.footer-social a svg {
+    width: 17px;
+    height: 17px;
+}
+
+.footer-social a:hover {
+    color: white;
+    background: #2563eb;
+    transform: translateY(-2px);
+}
+
+/* On the tasks page the sidebar is fixed at the left edge,
+   so give the footer the same left offset used by the main
+   content to avoid the sidebar covering part of it. */
+.tasks-app-screen .site-footer {
+    margin-left: 260px;
+}
+
+@media (max-width: 800px) {
+    .tasks-app-screen .site-footer {
+        margin-left: 0;
+    }
+}
+
+
+/* =========================
+   CLICKABLE AVATARS
+   Click your avatar (header or sidebar) to change it.
+========================= */
+
+.avatar-clickable {
+    cursor: pointer;
+    transition: .2s;
+}
+
+.avatar-clickable:hover {
+    filter: brightness(1.15);
+    transform: scale(1.05);
+}
+
+
+/* =========================
+   "ADD YOUR OWN" TILES
+   Used for uploading a custom avatar photo and for uploading
+   custom background photos.
+========================= */
+
+.avatar-add-option,
+.bg-add-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: rgba(255,255,255,.035);
+    border: 2px dashed rgba(96,165,250,.4);
+    color: #60a5fa;
+}
+
+.avatar-add-option:hover,
+.bg-add-option:hover {
+    background: rgba(59,130,246,.1);
+    border-color: rgba(96,165,250,.7);
+}
+
+.avatar-add-option img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.avatar-add-icon {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.avatar-add-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .3px;
+}
+
+/* The avatar circles are small (64px) — shrink the "Add" tile's
+   icon/label to match, so they don't overflow the circle. */
+.signin-avatar-grid.background-grid .avatar-add-icon {
+    font-size: 15px;
+}
+
+.signin-avatar-grid.background-grid .avatar-add-label {
+    font-size: 7px;
+}
+
+
+/* =========================
+   CUSTOM BACKGROUND GALLERY
+   Each uploaded photo gets a small delete button of its own.
+========================= */
+
+.background-option-wrapper {
+    position: relative;
+}
+
+.background-option-wrapper .background-option {
+    width: 100%;
+    height: 100%;
+}
+
+.bg-delete-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(220,38,38,.85);
+    color: white;
+    font-size: 11px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: .2s;
+}
+
+.bg-delete-btn:hover {
+    background: #dc2626;
+}
+
+
+/* =========================
+   VIDEOS PAGE
+   Cards are deliberately large and laid out on a strict
+   grid — a fixed minimum width per column, a consistent
+   16:9 thumbnail, so the library always looks tidy no
+   matter how many videos are listed.
+========================= */
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.video-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.07);
+    background: rgba(255,255,255,.025);
+    transition: .2s;
+}
+
+.video-card:hover {
+    border-color: rgba(96,165,250,.3);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 34px rgba(0,0,0,.3);
+}
+
+.video-card-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    padding: 0;
+    border: 0;
+    background: #0b1324;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.video-card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.video-card-play-badge {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: white;
+    background: rgba(15,23,42,.25);
+    transition: .2s;
+}
+
+.video-card-play-badge svg {
+    width: 56px;
+    height: 56px;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,.4));
+}
+
+.video-card-thumb:hover .video-card-play-badge {
+    background: rgba(15,23,42,.45);
+}
+
+.video-card-thumb:hover .video-card-play-badge svg {
+    transform: scale(1.08);
+}
+
+.video-card-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 18px;
+}
+
+.video-card-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- Full-viewport video player ---
+   Normally this is just a fixed, edge-to-edge overlay (not the
+   browser's native Fullscreen API) — reliable on every device,
+   including mobile, no permission prompts. When the person taps
+   OUR OWN full-screen button, .video-player-box itself goes
+   properly full-screen via the Fullscreen API. Doing it that way
+   (rather than fullscreening the YouTube iframe, whose own
+   full-screen button is turned off) means the task card comes
+   along for the ride, since it lives inside this same box. */
+
+.video-player-overlay .video-player-box {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.video-player-overlay .video-player-box:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    background: #030712;
+}
+
+/* The search bar behaves like any normal full-screen video
+   control and hides once full-screen starts. The task card
+   (#videoActiveTaskCard) is deliberately NOT touched here, so
+   it keeps showing the whole time. */
+.video-player-box:fullscreen .video-task-search-overlay {
+    display: none;
+}
+
+.video-player-title {
+    color: #94a3b8;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#videoPlayerEl,
+#videoPlayerEl iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: 0;
+}
+
+.youtube-frame-wrapper {
+    width: min(1100px, 92vw, calc((100vh - 90px) * 16 / 9));
+    max-height: calc(100vh - 90px);
+    aspect-ratio: 16 / 9;
+    border-radius: 14px;
+    overflow: hidden;
+    background: black;
+}
+
+.video-player-box:fullscreen .youtube-frame-wrapper {
+    width: min(100vw, calc(100vh * 16 / 9));
+    max-height: 100vh;
+    border-radius: 0;
+}
+
+/* Our full-screen toggle — the close button (✕) lives outside
+   .video-player-box, so like the search bar it naturally
+   disappears once this box goes full-screen; this button is
+   the only way in or out of full-screen at that point (besides
+   Esc), so it always stays visible. */
+.video-fullscreen-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 15;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(8,15,29,.7);
+    backdrop-filter: blur(8px);
+    color: white;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.video-fullscreen-btn:hover {
+    background: rgba(37,99,235,.7);
+}
+
+.video-fullscreen-btn svg {
+    width: 19px;
+    height: 19px;
+}
+
+/* --- "Bring your task into the video" overlay ---
+   Positioned relative to .video-player-box, so both sit
+   precisely inside the video's own viewing area. */
+
+.video-task-search-overlay {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    z-index: 10;
+    width: min(300px, 80vw);
+}
+
+.video-task-search-wrapper {
+    position: relative;
+}
+
+.video-task-search-wrapper .home-search-icon {
+    left: 14px;
+    width: 17px;
+    color: #64748b;
+}
+
+#videoTaskSearchInput {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px 0 40px;
+    border-radius: 11px;
+    border: 1px solid rgba(255,255,255,.1);
+    background: rgba(8,15,29,.55);
+    backdrop-filter: blur(10px);
+    color: white;
+    outline: none;
+    font-size: 13px;
+}
+
+#videoTaskSearchInput:focus {
+    border-color: rgba(59,130,246,.6);
+    background: rgba(8,15,29,.85);
+}
+
+.video-task-search-wrapper .home-task-search-suggestions {
+    background: #111c31;
+}
+
+/* The pinned task card hosts the exact same .task-item markup
+   used on the Tasks page — wide, centered at the top of the
+   video, and see-through enough to stay out of the way while
+   the video plays underneath it. */
+.video-active-task-card {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    width: min(760px, 92vw);
+    border-radius: 14px;
+    background: rgba(8,15,29,.5);
+    border: 1px solid rgba(96,165,250,.25);
+    backdrop-filter: blur(14px);
+    overflow: hidden;
+    box-shadow: 0 20px 45px rgba(0,0,0,.35);
+}
+
+.video-active-task-card.active {
+    display: flex;
+}
+
+.video-task-pin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    color: #60a5fa;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.video-task-pin-header button {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.08);
+    color: #94a3b8;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.video-task-pin-header button:hover {
+    background: rgba(255,255,255,.16);
+    color: white;
+}
+
+/* The task-item itself needs a transparent background here
+   (it already has one on the Tasks page) plus a touch less
+   padding so it fits neatly in the floating card. */
+#videoActiveTaskItemHost .task-item {
+    border: none;
+    border-radius: 0;
+    background: transparent;
+}
+
+#videoActiveTaskItemHost .task-item:hover {
+    transform: none;
+}
+
+
+/* =========================
+   SIDEBAR COLLAPSE
+   Desktop only. When the burger button closes the sidebar
+   (#sidebar gets ".closed"), #app-screen also gets
+   ".sidebar-collapsed" (used on both the Tasks page and the
+   Videos page — same markup class, same animation on both):
+     - the heading title (kicker + h1 + count, on Tasks; kicker
+       + h1 on Videos) stretches left into the space the sidebar
+       just vacated, all the way to the edge of the screen
+     - on the Videos page, the video grid moves along with the
+       title, all the way to the edge — it does not stay put and
+       does not center
+     - on the Tasks page, the Delete All / Add Task buttons stay
+       exactly where they are
+     - on the Tasks page, the task list re-centers itself in the
+       middle of the full screen width (equal empty space on
+       left and right), independently of the buttons above it
+     - the footer expands to the full width of the screen
+   Re-opening the sidebar reverses the same transitions back to
+   normal. All of these share one slower, smoother easing curve
+   (an "ease-out" glide) instead of a fast linear snap.
+========================= */
+
+.tasks-heading-title,
+.video-grid,
+.tasks-app-screen .site-footer,
+.tasks-list {
+    transition-duration: .5s;
+    transition-timing-function: cubic-bezier(.22,1,.36,1);
+}
+
+.tasks-app-screen .site-footer {
+    transition-property: margin-left;
+}
+
+.tasks-heading-title {
+    transition-property: margin-left;
+}
+
+.video-grid {
+    transition-property: margin-left;
+}
+
+.tasks-list {
+    position: relative;
+    transition-property: left;
+}
+
+.tasks-app-screen.sidebar-collapsed .tasks-heading-title,
+.tasks-app-screen.sidebar-collapsed .video-grid {
+    margin-left: -260px;
+}
+
+.tasks-app-screen.sidebar-collapsed .site-footer {
+    margin-left: 0;
+}
+
+/*
+ * The task list sits at a fixed offset (sidebar width 260px +
+ * tasks-main's own 30px padding = 290px from the left) and is
+ * capped at 1060px wide (tasks-main's 1120px max-width minus
+ * its 30px padding on each side). "50vw - 820px" re-centers
+ * that 1060px-wide block in the full viewport width regardless
+ * of the fixed 290px offset it normally sits at.
+ */
+.tasks-app-screen.sidebar-collapsed .tasks-list {
+    left: calc(50vw - 820px);
+}

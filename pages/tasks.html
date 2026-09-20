@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks • FocusLab</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='64' y2='64'%3E%3Cstop offset='0' stop-color='%232563eb'/%3E%3Cstop offset='1' stop-color='%2360a5fa'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='44' font-family='Arial, Helvetica, sans-serif' font-weight='900' font-size='28' fill='white' text-anchor='middle'%3EFL%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="../style/main.css">
+</head>
+
+<body>
+
+<div id="app-screen" class="tasks-app-screen">
+
+    <header class="tasks-header">
+
+        <button class="burger-btn" onclick="toggleSidebar()" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <a href="../index.html" class="brand tasks-brand">
+            <div class="brand-mark">FL</div>
+            <span>FocusLab</span>
+        </a>
+
+        <div class="tasks-search">
+            <svg viewBox="0 0 24 24" fill="none">
+                <circle cx="11" cy="11" r="6.5"
+                        stroke="currentColor" stroke-width="1.8"/>
+                <path d="M16 16L21 21"
+                      stroke="currentColor" stroke-width="1.8"
+                      stroke-linecap="round"/>
+            </svg>
+
+            <input
+                id="taskPageSearch"
+                type="text"
+                placeholder="Search tasks..."
+                oninput="searchTasksOnPage(this.value)"
+            >
+        </div>
+
+        <div class="mobile-header-nav">
+            <a href="../index.html" class="mobile-nav-btn" title="Home">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M4 10.5L12 4L20 10.5V20H4V10.5Z"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linejoin="round"/>
+                    <path d="M9 20V14H15V20"
+                          stroke="currentColor" stroke-width="1.7"/>
+                </svg>
+            </a>
+            <a href="tasks.html" class="mobile-nav-btn active" title="Tasks">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="4" y="3" width="16" height="18" rx="3"
+                          stroke="currentColor" stroke-width="1.7"/>
+                    <path d="M8 8L9.5 9.5L12 7"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M13.5 9H17"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round"/>
+                    <path d="M8 13L9.5 14.5L12 12"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M13.5 14H17"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round"/>
+                </svg>
+            </a>
+            <a href="video.html" class="mobile-nav-btn" title="Videos">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="5" width="18" height="14" rx="3"
+                          stroke="currentColor" stroke-width="1.7"/>
+                    <path d="M10 9L16 12L10 15V9Z"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linejoin="round"/>
+                </svg>
+            </a>
+        </div>
+
+    </header>
+
+
+    <aside id="sidebar" class="sidebar">
+
+        <div class="sidebar-user">
+            <img
+                id="sidebar-avatar"
+                class="sidebar-avatar avatar-clickable"
+                src="../images/avatars/avatar1.jpeg"
+                alt="Avatar"
+                onclick="openAvatarEditModal()"
+                title="Change avatar"
+            >
+
+            <div>
+                <strong id="sidebar-user-name">Focus User</strong>
+                <span>FocusLab</span>
+            </div>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <nav class="sidebar-nav">
+
+            <a href="../index.html" class="sidebar-item">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M4 10.5L12 4L20 10.5V20H4V10.5Z"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linejoin="round"/>
+                    <path d="M9 20V14H15V20"
+                          stroke="currentColor" stroke-width="1.7"/>
+                </svg>
+                <span>Home</span>
+            </a>
+
+            <a href="tasks.html" class="sidebar-item active">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="4" y="3" width="16" height="18" rx="3"
+                          stroke="currentColor" stroke-width="1.7"/>
+                    <path d="M8 8L9.5 9.5L12 7"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                    <path d="M13.5 9H17"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round"/>
+                    <path d="M8 13L9.5 14.5L12 12"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                    <path d="M13.5 14H17"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round"/>
+                </svg>
+                <span>Tasks</span>
+            </a>
+
+            <a href="video.html" class="sidebar-item">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="5" width="18" height="14" rx="3"
+                          stroke="currentColor" stroke-width="1.7"/>
+                    <path d="M10 9L16 12L10 15V9Z"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linejoin="round"/>
+                </svg>
+                <span>Videos</span>
+            </a>
+
+            <button class="sidebar-item sidebar-button" onclick="toggleMusicPanel()">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M9 18V6L19 4V16"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                    <circle cx="6.5" cy="18" r="2.5"
+                            stroke="currentColor" stroke-width="1.7"/>
+                    <circle cx="16.5" cy="16" r="2.5"
+                            stroke="currentColor" stroke-width="1.7"/>
+                </svg>
+                <span>Music</span>
+            </button>
+
+            <button class="sidebar-item sidebar-button" onclick="openBackgroundModal()">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="4" width="18" height="16" rx="3"
+                          stroke="currentColor" stroke-width="1.7"/>
+                    <circle cx="8" cy="9" r="1.5"
+                            stroke="currentColor" stroke-width="1.7"/>
+                    <path d="M4 17L9 12L13 16L16 13L20 17"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                </svg>
+                <span>Backgrounds</span>
+            </button>
+
+        </nav>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="filter-title">FILTER TASKS</div>
+
+        <button class="filter-item active" onclick="filterTasksByCategory('All')">
+            <span class="filter-icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M5 6H19"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round"/>
+                    <path d="M5 12H19"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round"/>
+                    <path d="M5 18H19"
+                          stroke="currentColor" stroke-width="1.7"
+                          stroke-linecap="round"/>
+                    <circle cx="8" cy="6" r="1"
+                            fill="currentColor"/>
+                    <circle cx="15" cy="12" r="1"
+                            fill="currentColor"/>
+                    <circle cx="10" cy="18" r="1"
+                            fill="currentColor"/>
+                </svg>
+            </span>
+            <span>All Tasks</span>
+        </button>
+
+        <button class="filter-item" onclick="filterTasksByCategory('Important')">
+            <span class="filter-icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M12 3.5L14.6 8.8L20.5 9.6L16.2 13.7L17.2 19.5L12 16.8L6.8 19.5L7.8 13.7L3.5 9.6L9.4 8.8L12 3.5Z"
+                          stroke="currentColor"
+                          stroke-width="1.6"
+                          stroke-linejoin="round"/>
+                </svg>
+            </span>
+            <span>Important</span>
+        </button>
+
+        <button class="filter-item" onclick="filterTasksByCategory('Normal')">
+            <span class="filter-icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="8"
+                            stroke="currentColor" stroke-width="1.7"/>
+                    <path d="M8.5 12L10.8 14.3L15.5 9.6"
+                          stroke="currentColor"
+                          stroke-width="1.7"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                </svg>
+            </span>
+            <span>Normal</span>
+        </button>
+
+        <button class="filter-item" onclick="filterTasksByCategory('Study')">
+            <span class="filter-icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M4 5.5C4 4.67 4.67 4 5.5 4H11V19H5.5C4.67 19 4 18.33 4 17.5V5.5Z"
+                          stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M20 5.5C20 4.67 19.33 4 18.5 4H13V19H18.5C19.33 19 20 18.33 20 17.5V5.5Z"
+                          stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M11 6H13"
+                          stroke="currentColor" stroke-width="1.6"
+                          stroke-linecap="round"/>
+                </svg>
+            </span>
+            <span>Study</span>
+        </button>
+
+        <button class="filter-item" onclick="filterTasksByCategory('Completed')">
+            <span class="filter-icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="8.5"
+                            stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M8 12.3L10.6 15L16 9.3"
+                          stroke="currentColor"
+                          stroke-width="1.7"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                </svg>
+            </span>
+            <span>Completed</span>
+        </button>
+
+    </aside>
+
+    <!-- MUSIC PANEL — opens in the exact place of the sidebar, hiding it -->
+    <aside id="musicSidebarPanel" class="sidebar music-sidebar-panel panel-hidden">
+
+        <div class="music-panel-header">
+            <h3>Focus Music</h3>
+            <button class="music-close" onclick="closeMusicSidebarPanel()">✕</button>
+        </div>
+
+        <input
+            type="file"
+            id="musicFileInput"
+            accept="audio/mpeg,audio/mp3,video/mp4,audio/mp4,.mp3,.mp4"
+            multiple
+            style="display:none"
+            onchange="handleMusicFileSelected(event)"
+        >
+
+        <div id="musicListContainer" class="music-list-container"></div>
+
+        <button class="music-stop-button" onclick="stopMusic()">Stop Music</button>
+
+        <!-- Add Music sits last, at the end of the playlist window -->
+        <button class="add-music-button" onclick="triggerAddMusic()">+ Add Music</button>
+
+    </aside>
+
+
+    <main class="tasks-main">
+
+        <div class="tasks-heading-row">
+
+            <div class="tasks-heading-title">
+                <span class="section-kicker">YOUR PRODUCTIVITY</span>
+                <h1 id="tasksPageTitle">My Tasks</h1>
+                <p id="tasksCountText">0 tasks</p>
+            </div>
+
+            <div class="task-actions">
+                <button class="delete-all-button" onclick="deleteAllTasks()">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M4 7H20"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round"/>
+                        <path d="M9 7V5H15V7"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round"/>
+                        <path d="M7 7L8 20H16L17 7"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linejoin="round"/>
+                        <path d="M10 11V16"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round"/>
+                        <path d="M14 11V16"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round"/>
+                    </svg>
+                    Delete All
+                </button>
+
+                <button class="add-task-button" onclick="openAddTaskModal()">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M12 5V19"
+                              stroke="currentColor" stroke-width="1.9"
+                              stroke-linecap="round"/>
+                        <path d="M5 12H19"
+                              stroke="currentColor" stroke-width="1.9"
+                              stroke-linecap="round"/>
+                    </svg>
+                    Add Task
+                </button>
+            </div>
+
+        </div>
+
+
+        <div id="tasksListContainer" class="tasks-list"></div>
+
+        <div id="emptyTasksState" class="empty-tasks-state">
+            <div class="empty-icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="4" y="3" width="16" height="18" rx="3"
+                          stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M8 9H16"
+                          stroke="currentColor" stroke-width="1.6"
+                          stroke-linecap="round"/>
+                    <path d="M8 13H13"
+                          stroke="currentColor" stroke-width="1.6"
+                          stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h2>No tasks yet</h2>
+            <p>Create your first task and start focusing.</p>
+            <button onclick="openAddTaskModal()">Create Task</button>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+  <footer class="site-footer">
+
+        <div class="footer-credit">
+
+            <span class="footer-brand-text">FocusLab</span>
+            <span class="footer-brand-text">©</span>
+        </div>
+
+        <div class="footer-credit">
+            <span>Created by Ahmed Mohamed</span>
+
+        </div>
+
+        <div class="footer-social">
+
+            <a href="https://www.facebook.com/" aria-label="Facebook" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M14.5 8.5H16.5V5.3C16.16 5.26 15 5.17 13.63 5.17C10.77 5.17 8.81 6.93 8.81 10.13V12.75H5.63V16.32H8.81V22.5H12.5V16.32H15.66L16.16 12.75H12.5V10.5C12.5 9.47 12.78 8.5 14.5 8.5Z" fill="currentColor"/>
+                </svg>
+            </a>
+
+            <a href="https://www.youtube.com/" aria-label="YouTube" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="2.5" y="6" width="19" height="12" rx="4" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M10.5 9.5L15 12L10.5 14.5V9.5Z" fill="currentColor"/>
+                </svg>
+            </a>
+
+            <a href="https://www.tiktok.com/en/" aria-label="TikTok" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M13.5 3V14.8C13.5 16.35 12.25 17.6 10.7 17.6C9.15 17.6 7.9 16.35 7.9 14.8C7.9 13.25 9.15 12 10.7 12C11 12 11.28 12.04 11.55 12.12V9.55C11.27 9.51 11 9.5 10.7 9.5C7.74 9.5 5.4 11.84 5.4 14.8C5.4 17.76 7.74 20.1 10.7 20.1C13.66 20.1 16 17.76 16 14.8V8.9C16.9 9.55 18 9.95 19.2 9.95V7.45C17.15 7.45 15.5 5.9 15.5 3.9V3H13.5Z" fill="currentColor"/>
+                </svg>
+            </a>
+
+        </div>
+
+    </footer>
+
+    <!-- ADD TASK MODAL -->
+    <div id="addTaskModal" class="modal-overlay">
+
+        <div class="modal-box">
+
+            <button class="modal-close" onclick="closeAddTaskModal()">✕</button>
+
+            <div class="modal-icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M12 5V19"
+                          stroke="currentColor" stroke-width="1.8"
+                          stroke-linecap="round"/>
+                    <path d="M5 12H19"
+                          stroke="currentColor" stroke-width="1.8"
+                          stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <h2>Create New Task</h2>
+            <p class="modal-description">Set your focus session before you start.</p>
+
+            <label>Task name</label>
+            <input id="taskTextInput" type="text" placeholder="What do you need to do?">
+
+            <div class="form-grid">
+
+                <div>
+                    <label>Focus time</label>
+                    <div class="input-with-unit">
+                        <input id="focusTimeInput" type="number" min="0" placeholder="25">
+                        <span>min</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label>Break</label>
+                    <div class="input-with-unit">
+                        <input id="breakTimeInput" type="number" min="0" placeholder="5">
+                        <span>min</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <label>Priority</label>
+
+            <select id="priorityInput">
+                <option value="Normal">Normal</option>
+                <option value="Important">Important</option>
+                <option value="Study">Study</option>
+            </select>
+
+            <button class="modal-submit-button" onclick="createTask()">
+                Start Task
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOCUS TIMER -->
+    <div id="focusTimerModal" class="timer-modal-overlay-pure">
+
+        <button class="timer-pure-close-btn" onclick="closeFocusTimer()">✕</button>
+
+        <div class="timer-pure-content">
+
+            <span class="timer-label">FOCUS SESSION</span>
+
+            <h3 id="timerTaskTitle" class="timer-pure-title">
+                Focus Session
+            </h3>
+
+            <div id="timerDisplay" class="timer-pure-big-number">
+                00:00
+            </div>
+
+            <p id="timerStatusText" class="timer-status-text">
+                Your timer is running automatically.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUCCESS / FAILURE ANIMATION -->
+    <div id="taskResultOverlay" class="task-result-overlay">
+
+        <div class="task-result-animation">
+
+            <div id="taskResultCircle" class="task-result-circle success">
+                <svg id="taskResultSvg" viewBox="0 0 64 64" fill="none">
+                    <path id="taskResultPath"
+                          d="M18 33L27 42L47 21"
+                          stroke="currentColor"
+                          stroke-width="5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                </svg>
+            </div>
+
+            <h2 id="taskResultTitle">Task Complete!</h2>
+            <p id="taskResultSubtitle">Great job. Keep going.</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- BREAK -->
+    <div id="breakOverlay" class="break-overlay">
+
+        <button class="break-skip-btn" onclick="skipBreak()">✕</button>
+
+        <div class="break-content">
+
+            <span class="break-small-label">FOCUSLAB</span>
+
+            <h1>BREAK TIME</h1>
+
+            <div id="breakDisplay" class="break-display">
+                05:00
+            </div>
+
+            <p>Take a short rest before your next task.</p>
+
+            <button class="break-skip-button" onclick="skipBreak()">
+                Skip Break
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- BACKGROUNDS — four built-in wallpapers plus any photos you add,
+         each glowing softly from the top of the screen. The gallery
+         scrolls so every background stays reachable. -->
+    <div id="backgroundModal" class="modal-overlay">
+
+        <div class="modal-box background-modal-box">
+
+            <button class="modal-close" onclick="closeBackgroundModal()">✕</button>
+
+            <h2>Choose Background</h2>
+            <p class="modal-description">Pick a wallpaper, or add your own photos.</p>
+
+            <div class="background-grid" id="backgroundGrid"></div>
+
+            <input
+                type="file"
+                id="backgroundFileInput"
+                accept="image/*"
+                multiple
+                style="display:none"
+                onchange="handleBackgroundFileSelected(event)"
+            >
+
+            <button class="reset-background-button"
+                    onclick="resetBackground()">
+                Reset Background
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- CHANGE AVATAR — click your avatar in the header or sidebar -->
+    <div id="avatarEditModal" class="modal-overlay">
+
+        <div class="modal-box">
+
+            <button class="modal-close" onclick="closeAvatarEditModal()">✕</button>
+
+            <div class="modal-icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.7"/>
+                    <path d="M5.5 19.5C6.5 16 9 14.5 12 14.5C15 14.5 17.5 16 18.5 19.5"
+                          stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <h2>Change Avatar</h2>
+            <p class="modal-description">Pick an avatar or upload your own photo.</p>
+
+            <div class="background-grid signin-avatar-grid" id="avatarEditGrid">
+                <button type="button" class="background-option" data-avatar="images/avatars/avatar1.jpeg" onclick="applyAvatarChoice(this)">
+                    <img src="../images/avatars/avatar1.jpeg" alt="Avatar 1">
+                </button>
+                <button type="button" class="background-option" data-avatar="images/avatars/avatar2.jpeg" onclick="applyAvatarChoice(this)">
+                    <img src="../images/avatars/avatar2.jpeg" alt="Avatar 2">
+                </button>
+                <button type="button" class="background-option" data-avatar="images/avatars/avatar3.jpeg" onclick="applyAvatarChoice(this)">
+                    <img src="../images/avatars/avatar3.jpeg" alt="Avatar 3">
+                </button>
+                <button type="button" class="background-option" data-avatar="images/avatars/avatar4.jpeg" onclick="applyAvatarChoice(this)">
+                    <img src="../images/avatars/avatar4.jpeg" alt="Avatar 4">
+                </button>
+                <button type="button" class="background-option avatar-add-option" id="avatarEditAddBtn" onclick="triggerAvatarEditUpload()">
+                    <span class="avatar-add-icon">+</span>
+                    <span class="avatar-add-label">Add</span>
+                </button>
+            </div>
+
+            <input
+                type="file"
+                id="avatarEditFileInput"
+                accept="image/*"
+                style="display:none"
+                onchange="handleAvatarEditFileSelected(event)"
+            >
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script src="../music/manifest.js"></script>
+<script src="../script/main.js"></script>
+
+</body>
+</html>
