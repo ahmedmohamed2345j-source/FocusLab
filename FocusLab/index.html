@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusLab</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='64' y2='64'%3E%3Cstop offset='0' stop-color='%232563eb'/%3E%3Cstop offset='1' stop-color='%2360a5fa'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='44' font-family='Arial, Helvetica, sans-serif' font-weight='900' font-size='28' fill='white' text-anchor='middle'%3EFL%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="style/main.css">
+    <script>
+        /*
+         * Decide instantly (before the page paints) whether to show
+         * the sign-in form or the home app, so there is no flash of
+         * the wrong view. The actual show/hide is done in CSS via
+         * these two classes — see main.css.
+         */
+        document.documentElement.classList.add(
+            localStorage.getItem("focusLab_signedIn") === "true"
+                ? "is-signed-in"
+                : "is-guest"
+        );
+    </script>
+</head>
+
+<body class="home-page">
+
+    <div class="home-screen">
+
+        <!-- =========================================================
+             SIGN IN VIEW
+             Shown when the person has not signed in yet. Submitting
+             this form no longer navigates to another file — it just
+             reveals the home view below, in this same page.
+        ========================================================== -->
+        <div id="signinView" class="modal-box signin-box">
+
+            <div class="signin-logo-row">
+                <div class="brand-mark">FL</div>
+                <span>FocusLab</span>
+            </div>
+
+            <h2>Create your account</h2>
+            <p class="modal-description">Sign in to start focusing on what matters.</p>
+
+            <div class="form-grid">
+                <div>
+                    <label>First name</label>
+                    <input id="signinFirstName" type="text" placeholder="Focus" autocomplete="given-name">
+                </div>
+                <div>
+                    <label>Last name</label>
+                    <input id="signinLastName" type="text" placeholder="User" autocomplete="family-name">
+                </div>
+            </div>
+
+            <label>Email</label>
+            <input id="signinEmail" type="email" placeholder="you@example.com" autocomplete="email">
+
+            <label>Password</label>
+            <input id="signinPassword" type="password" placeholder="••••••••" autocomplete="new-password">
+
+            <label>Choose an avatar</label>
+            <div class="background-grid signin-avatar-grid" id="signinAvatarGrid">
+                <button type="button" class="background-option" data-avatar="images/avatars/avatar1.jpeg" onclick="selectSigninAvatar(this)">
+                    <img src="images/avatars/avatar1.jpeg" alt="Avatar 1">
+                </button>
+                <button type="button" class="background-option" data-avatar="images/avatars/avatar2.jpeg" onclick="selectSigninAvatar(this)">
+                    <img src="images/avatars/avatar2.jpeg" alt="Avatar 2">
+                </button>
+                <button type="button" class="background-option" data-avatar="images/avatars/avatar3.jpeg" onclick="selectSigninAvatar(this)">
+                    <img src="images/avatars/avatar3.jpeg" alt="Avatar 3">
+                </button>
+                <button type="button" class="background-option" data-avatar="images/avatars/avatar4.jpeg" onclick="selectSigninAvatar(this)">
+                    <img src="images/avatars/avatar4.jpeg" alt="Avatar 4">
+                </button>
+                <button type="button" class="background-option avatar-add-option" id="signinAvatarAddBtn" onclick="triggerSigninAvatarUpload()">
+                    <span class="avatar-add-icon">+</span>
+                    <span class="avatar-add-label">Add</span>
+                </button>
+            </div>
+
+            <input
+                type="file"
+                id="signinAvatarFileInput"
+                accept="image/*"
+                style="display:none"
+                onchange="handleSigninAvatarFileSelected(event)"
+            >
+
+            <p id="signinError" class="signin-error">Please fill in every field and choose an avatar.</p>
+
+            <button class="modal-submit-button" onclick="submitSignin()">
+                Sign In
+            </button>
+
+        </div>
+
+
+        <!-- =========================================================
+             HOME APP VIEW
+             Shown once the person is signed in. This is the same
+             content that used to live in pages/home.html.
+        ========================================================== -->
+        <div id="homeAppView">
+
+            <header class="home-header">
+                <a href="index.html" class="brand">
+                    <div class="brand-mark">FL</div>
+                    <span>FocusLab</span>
+                </a>
+
+                <nav class="home-nav">
+                    <a href="index.html" class="active">Home</a>
+                    <a href="pages/tasks.html">Tasks</a>
+                    <a href="pages/video.html">Videos</a>
+                </nav>
+
+                <div class="nav-search-wrapper">
+                    <svg class="home-search-icon nav-search-icon" viewBox="0 0 24 24" fill="none">
+                        <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+                        <path d="M16 16L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+
+                    <input
+                        type="text"
+                        id="navTaskSearch"
+                        class="nav-search-input"
+                        placeholder="Search tasks..."
+                        autocomplete="off"
+                    >
+
+                    <div
+                        id="navTaskSearchSuggestions"
+                        class="home-task-search-suggestions"
+                    ></div>
+                </div>
+
+                <div class="mobile-header-nav">
+                    <a href="index.html" class="mobile-nav-btn active" title="Home">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M4 10.5L12 4L20 10.5V20H4V10.5Z"
+                                  stroke="currentColor" stroke-width="1.7"
+                                  stroke-linejoin="round"/>
+                            <path d="M9 20V14H15V20"
+                                  stroke="currentColor" stroke-width="1.7"/>
+                        </svg>
+                    </a>
+                    <a href="pages/tasks.html" class="mobile-nav-btn" title="Tasks">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <rect x="4" y="3" width="16" height="18" rx="3"
+                                  stroke="currentColor" stroke-width="1.7"/>
+                            <path d="M8 8L9.5 9.5L12 7"
+                                  stroke="currentColor" stroke-width="1.7"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M13.5 9H17"
+                                  stroke="currentColor" stroke-width="1.7"
+                                  stroke-linecap="round"/>
+                            <path d="M8 13L9.5 14.5L12 12"
+                                  stroke="currentColor" stroke-width="1.7"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M13.5 14H17"
+                                  stroke="currentColor" stroke-width="1.7"
+                                  stroke-linecap="round"/>
+                        </svg>
+                    </a>
+                    <a href="pages/video.html" class="mobile-nav-btn" title="Videos">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="5" width="18" height="14" rx="3"
+                                  stroke="currentColor" stroke-width="1.7"/>
+                            <path d="M10 9L16 12L10 15V9Z"
+                                  stroke="currentColor" stroke-width="1.7"
+                                  stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <div class="home-user">
+                    <img id="homeAvatar" class="avatar-clickable" src="images/avatars/avatar1.jpeg" alt="Avatar" onclick="openAvatarEditModal()" title="Change avatar">
+                    <span id="homeUserName">Focus User</span>
+                </div>
+            </header>
+
+            <main class="home-main">
+
+                <section class="hero-section">
+                    <div class="hero-content">
+                        <span class="hero-small-title">FOCUS • PLAN • ACHIEVE</span>
+                        <h1>Stay focused.<br><span>Get things done.</span></h1>
+                        <p>
+                            Organize your tasks, focus on what matters,
+                            and make every study session count.
+                        </p>
+
+                        <div class="hero-buttons">
+                            <a href="pages/tasks.html" class="primary-button">
+                                Open Tasks
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="home-search-section">
+
+                    <div class="search-heading">
+                        <span class="section-kicker">QUICK SEARCH</span>
+                        <h2>Find a task</h2>
+                        <p>Type at least 2 characters to search your tasks.</p>
+                    </div>
+
+                    <div class="home-search-wrapper">
+                        <svg class="home-search-icon" viewBox="0 0 24 24" fill="none">
+                            <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M16 16L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+
+                        <input
+                            type="text"
+                            id="homeTaskSearch"
+                            class="home-search-input"
+                            placeholder="Search your tasks..."
+                            autocomplete="off"
+                        >
+
+                        <div
+                            id="homeTaskSearchSuggestions"
+                            class="home-task-search-suggestions"
+                        ></div>
+                    </div>
+
+                </section>
+
+                <section class="home-cards">
+
+                    <a href="pages/tasks.html" class="home-card">
+                        <div class="home-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <rect x="4" y="3" width="16" height="18" rx="3"
+                                      stroke="currentColor" stroke-width="1.7"/>
+                                <path d="M8 8L9.5 9.5L12 7"
+                                      stroke="currentColor" stroke-width="1.7"
+                                      stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M13.5 9H17"
+                                      stroke="currentColor" stroke-width="1.7"
+                                      stroke-linecap="round"/>
+                                <path d="M8 13L9.5 14.5L12 12"
+                                      stroke="currentColor" stroke-width="1.7"
+                                      stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M13.5 14H17"
+                                      stroke="currentColor" stroke-width="1.7"
+                                      stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3>Tasks</h3>
+                            <p>Manage your daily tasks</p>
+                        </div>
+                    </a>
+
+                    <a href="pages/video.html" class="home-card">
+                        <div class="home-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <rect x="3" y="5" width="18" height="14" rx="3"
+                                      stroke="currentColor" stroke-width="1.7"/>
+                                <path d="M10 9L16 12L10 15V9Z"
+                                      stroke="currentColor" stroke-width="1.7"
+                                      stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3>Videos</h3>
+                            <p>Learn and stay inspired</p>
+                        </div>
+                    </a>
+
+                    <div class="home-card">
+                        <div class="home-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M5 10V17"
+                                      stroke="currentColor" stroke-width="1.7"
+                                      stroke-linecap="round"/>
+                                <path d="M9 7V17"
+                                      stroke="currentColor" stroke-width="1.7"
+                                      stroke-linecap="round"/>
+                                <path d="M13 12V17"
+                                      stroke="currentColor" stroke-width="1.7"
+                                      stroke-linecap="round"/>
+                                <path d="M17 5V17"
+                                      stroke="currentColor" stroke-width="1.7"
+                                      stroke-linecap="round"/>
+                                <path d="M4 20H20"
+                                      stroke="currentColor" stroke-width="1.7"
+                                      stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3>FocusLab</h3>
+                            <p>Build your productivity</p>
+                        </div>
+                    </div>
+
+                </section>
+
+            </main>
+
+            <!-- ================= FOOTER ================= -->
+            <footer class="site-footer">
+
+                <div class="footer-brand">
+                    <div class="footer-brand-mark">FL</div>
+                    <span class="footer-brand-text">FocusLab</span>
+                    <span class="verified-badge" title="Verified">©</span>
+                </div>
+
+                <div class="footer-credit">
+                    <span>Created by <strong>Gamal Mohamed</strong> &amp; <strong>Ahmed Mohamed</strong></span>
+                    <span class="verified-badge" title="Verified creators">©</span>
+                </div>
+
+                <div class="footer-social">
+
+                    <a href="https://www.facebook.com/" aria-label="Facebook" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M14.5 8.5H16.5V5.3C16.16 5.26 15 5.17 13.63 5.17C10.77 5.17 8.81 6.93 8.81 10.13V12.75H5.63V16.32H8.81V22.5H12.5V16.32H15.66L16.16 12.75H12.5V10.5C12.5 9.47 12.78 8.5 14.5 8.5Z" fill="currentColor"/>
+                        </svg>
+                    </a>
+
+                    <a href="https://www.youtube.com/" aria-label="YouTube" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <rect x="2.5" y="6" width="19" height="12" rx="4" stroke="currentColor" stroke-width="1.6"/>
+                            <path d="M10.5 9.5L15 12L10.5 14.5V9.5Z" fill="currentColor"/>
+                        </svg>
+                    </a>
+
+                    <a href="https://www.tiktok.com/en/" aria-label="TikTok" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M13.5 3V14.8C13.5 16.35 12.25 17.6 10.7 17.6C9.15 17.6 7.9 16.35 7.9 14.8C7.9 13.25 9.15 12 10.7 12C11 12 11.28 12.04 11.55 12.12V9.55C11.27 9.51 11 9.5 10.7 9.5C7.74 9.5 5.4 11.84 5.4 14.8C5.4 17.76 7.74 20.1 10.7 20.1C13.66 20.1 16 17.76 16 14.8V8.9C16.9 9.55 18 9.95 19.2 9.95V7.45C17.15 7.45 15.5 5.9 15.5 3.9V3H13.5Z" fill="currentColor"/>
+                        </svg>
+                    </a>
+
+                </div>
+
+            </footer>
+
+        </div>
+
+    </div>
+
+    <!-- CHANGE AVATAR (available once signed in — click your avatar) -->
+    <div id="avatarEditModal" class="modal-overlay">
+
+        <div class="modal-box">
+
+            <button class="modal-close" onclick="closeAvatarEditModal()">✕</button>
+
+            <div class="modal-icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.7"/>
+                    <path d="M5.5 19.5C6.5 16 9 14.5 12 14.5C15 14.5 17.5 16 18.5 19.5"
+                          stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <h2>Change Avatar</h2>
+            <p class="modal-description">Pick an avatar or upload your own photo.</p>
+
+            <div class="background-grid signin-avatar-grid" id="avatarEditGrid">
+                <button type="button" class="background-option" data-avatar="images/avatars/avatar1.jpeg" onclick="applyAvatarChoice(this)">
+                    <img src="images/avatars/avatar1.jpeg" alt="Avatar 1">
+                </button>
+                <button type="button" class="background-option" data-avatar="images/avatars/avatar2.jpeg" onclick="applyAvatarChoice(this)">
+                    <img src="images/avatars/avatar2.jpeg" alt="Avatar 2">
+                </button>
+                <button type="button" class="background-option" data-avatar="images/avatars/avatar3.jpeg" onclick="applyAvatarChoice(this)">
+                    <img src="images/avatars/avatar3.jpeg" alt="Avatar 3">
+                </button>
+                <button type="button" class="background-option" data-avatar="images/avatars/avatar4.jpeg" onclick="applyAvatarChoice(this)">
+                    <img src="images/avatars/avatar4.jpeg" alt="Avatar 4">
+                </button>
+                <button type="button" class="background-option avatar-add-option" id="avatarEditAddBtn" onclick="triggerAvatarEditUpload()">
+                    <span class="avatar-add-icon">+</span>
+                    <span class="avatar-add-label">Add</span>
+                </button>
+            </div>
+
+            <input
+                type="file"
+                id="avatarEditFileInput"
+                accept="image/*"
+                style="display:none"
+                onchange="handleAvatarEditFileSelected(event)"
+            >
+
+        </div>
+
+    </div>
+
+    <script src="script/main.js"></script>
+</body>
+</html>
