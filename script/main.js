@@ -65,14 +65,119 @@ function escapeHTML(value) {
 function formatSeconds(seconds) {
     seconds = Math.max(0, Math.floor(seconds));
 
-    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
 
-    return (
-        String(minutes).padStart(2, "0") +
-        ":" +
-        String(secs).padStart(2, "0")
+    const mm = String(minutes).padStart(2, "0");
+    const ss = String(secs).padStart(2, "0");
+
+    /*
+     * Under an hour: MM:SS (unchanged).
+     * One hour or more: H:MM:SS — e.g. a 120 minute task shows
+     * 2:00:00 instead of 120:00.
+     */
+    return hours > 0
+        ? hours + ":" + mm + ":" + ss
+        : mm + ":" + ss;
+}
+
+
+/* =========================================================
+   HOURS + MINUTES  (focus time / break time)
+   Times are still STORED as a plain number of minutes (so old
+   tasks keep working). These helpers only change how a time is
+   typed and shown:
+     45 min      -> "45"      unit "min"
+     60 min      -> "1"       unit "hr"
+     90 min      -> "1:30"    unit "hr"
+     120 min     -> "2"       unit "hr"
+     121 min     -> "2:01"    unit "hr"
+========================================================= */
+
+function normalizeDigits(value) {
+    /* Arabic-Indic (٠-٩) and Persian (۰-۹) digits -> 0-9 */
+    return String(value ?? "")
+        .replace(/[٠-٩]/g, d => String(d.charCodeAt(0) - 1632))
+        .replace(/[۰-۹]/g, d => String(d.charCodeAt(0) - 1776));
+}
+
+/*
+ * Understands what a person may type in the time box:
+ *   "90"  "1:30"  "2h"  "2 hr"  "1h 30m"  "45 min"
+ * Returns total minutes, or null when it can't be read.
+ */
+function parseTimeText(value) {
+
+    const raw = normalizeDigits(value).trim().toLowerCase();
+
+    if (!raw) return null;
+
+    let match = raw.match(/^(\d+):(\d{1,2})$/);
+
+    if (match) {
+        return Number(match[1]) * 60 + Number(match[2]);
+    }
+
+    match = raw.match(
+        /^(\d+(?:\.\d+)?)\s*(?:h|hr|hrs|hour|hours)(?:\s*(\d+(?:\.\d+)?)\s*(?:m|min|mins|minute|minutes)?)?$/
     );
+
+    if (match) {
+        return Number(match[1]) * 60 + Number(match[2] || 0);
+    }
+
+    match = raw.match(
+        /^(\d+(?:\.\d+)?)\s*(?:m|min|mins|minute|minutes)?$/
+    );
+
+    if (match) {
+        return Number(match[1]);
+    }
+
+    return null;
+}
+
+/* What goes inside the time box: "45", "1", "1:30", "2" ... */
+function formatMinutesForInput(minutes) {
+
+    if (minutes === null || minutes === undefined || !Number.isFinite(minutes)) {
+        return "";
+    }
+
+    if (minutes < 60) {
+        return String(Math.round(minutes * 100) / 100);
+    }
+
+    const total = Math.round(minutes);
+    const hours = Math.floor(total / 60);
+    const rest = total % 60;
+
+    return rest === 0
+        ? String(hours)
+        : hours + ":" + String(rest).padStart(2, "0");
+}
+
+/* The wording shown on the task row: "45 min", "2 hours", "1 hr 30 min" */
+function formatMinutesLabel(minutes) {
+
+    const value = Number(minutes);
+
+    if (!Number.isFinite(value) || value <= 0) return "";
+
+    if (value < 60) {
+        return (Math.round(value * 100) / 100) + " min";
+    }
+
+    const total = Math.round(value);
+    const hours = Math.floor(total / 60);
+    const rest = total % 60;
+
+    if (rest === 0) {
+        return hours + (hours === 1 ? " hour" : " hours");
+    }
+
+    return hours + " hr " + rest + " min";
 }
 
 function getAssetPath(path) {
@@ -594,21 +699,22 @@ function createTask() {
         return;
     }
 
-    const focusValue = focusInput
-        ? Number(focusInput.value)
-        : 0;
+    /*
+     * The time boxes accept minutes ("90"), hours and minutes
+     * ("1:30", "2h") — getTimeInputMinutes turns any of them into
+     * a plain number of minutes.
+     */
+    const focusValue = getTimeInputMinutes(focusInput);
 
-    const breakValue = breakInput
-        ? Number(breakInput.value)
-        : 0;
+    const breakValue = getTimeInputMinutes(breakInput);
 
     const focusTime =
-        Number.isFinite(focusValue) && focusValue > 0
+        focusValue !== null && Number.isFinite(focusValue) && focusValue > 0
             ? focusValue
             : null;
 
     const breakTime =
-        Number.isFinite(breakValue) && breakValue > 0
+        breakValue !== null && Number.isFinite(breakValue) && breakValue > 0
             ? breakValue
             : null;
 
@@ -670,12 +776,304 @@ function clearTaskForm() {
     const priorityInput = document.getElementById("priorityInput");
 
     if (taskInput) taskInput.value = "";
-    if (focusInput) focusInput.value = "";
-    if (breakInput) breakInput.value = "";
+    if (focusInput) {
+        focusInput.value = "";
+        focusInput.dataset.normalized = "0";
+        delete focusInput.dataset.minutes;
+        updateTimeInputUnit(focusInput);
+    }
+
+    if (breakInput) {
+        breakInput.value = "";
+        breakInput.dataset.normalized = "0";
+        delete breakInput.dataset.minutes;
+        updateTimeInputUnit(breakInput);
+    }
 
     if (priorityInput) {
         priorityInput.value = "Normal";
     }
+}
+
+
+/* =========================================================
+   TIME BOXES (Focus time / Break) — hours & minutes
+   The two boxes in the "Create New Task" window. While the
+   number is under 60 it is minutes ("45" + "min"). From 60 up it
+   turns into hours: "1" + "hr" at 60, then 1:01, 1:02 ... 1:59,
+   then "2" + "hr" at 120, and so on. You can step with the
+   little arrows (hold to keep going), the Up/Down keys, or just
+   type: "90", "1:30", "2h", "1h 30m" all work.
+   Nothing about the layout changes — the boxes look the same;
+   only the small arrows' styling is added from here.
+========================================================= */
+
+const TIME_INPUT_IDS = ["focusTimeInput", "breakTimeInput"];
+
+const TIME_STEPPER_ARROW_UP = `
+    <svg viewBox="0 0 10 10" width="8" height="8" fill="none">
+        <path d="M2 6.5L5 3.5L8 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+`;
+
+const TIME_STEPPER_ARROW_DOWN = `
+    <svg viewBox="0 0 10 10" width="8" height="8" fill="none">
+        <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+`;
+
+function ensureTimeInputStyles() {
+
+    if (document.getElementById("focusLabTimeInputStyles")) return;
+
+    const style = document.createElement("style");
+
+    style.id = "focusLabTimeInputStyles";
+
+    style.textContent = `
+        .input-with-unit input[data-time-input] {
+            padding-right: 68px;
+        }
+
+        .time-stepper {
+            position: absolute;
+            right: 42px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            opacity: 0;
+            transition: opacity .2s;
+        }
+
+        .input-with-unit:hover .time-stepper,
+        .input-with-unit:focus-within .time-stepper {
+            opacity: 1;
+        }
+
+        .time-stepper button {
+            width: 20px;
+            height: 15px;
+            border-radius: 5px;
+            display: grid;
+            place-items: center;
+            background: rgba(255,255,255,.06);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: .15s;
+            touch-action: manipulation;
+        }
+
+        .time-stepper button:hover {
+            background: rgba(59,130,246,.2);
+            color: #60a5fa;
+        }
+
+        /* Phones have no hover and no spinner — people just type. */
+        @media (hover: none) {
+            .time-stepper {
+                display: none;
+            }
+        }
+    `;
+
+    document.head.appendChild(style);
+}
+
+/*
+ * The real number of minutes in a time box. Once the box has been
+ * tidied up ("1" next to "hr"), the exact minutes are kept aside,
+ * because the text "1" alone would be read as one minute.
+ */
+function getTimeInputMinutes(input) {
+
+    if (!input) return null;
+
+    if (input.dataset.normalized === "1" && input.dataset.minutes) {
+        return Number(input.dataset.minutes);
+    }
+
+    return parseTimeText(input.value);
+}
+
+function updateTimeInputUnit(input) {
+
+    const wrapper = input.parentElement;
+
+    const unit = wrapper
+        ? wrapper.querySelector(":scope > span")
+        : null;
+
+    if (!unit) return;
+
+    const text = normalizeDigits(input.value).trim();
+    const minutes = getTimeInputMinutes(input);
+
+    /*
+     * Plain digits while typing still mean minutes, so the unit
+     * only flips to "hr" once the box has been tidied up (on
+     * leaving the box, or with the arrows) or the person typed
+     * the hours themselves ("1:30", "2h").
+     */
+    const meansHours =
+        minutes !== null &&
+        minutes >= 60 &&
+        (input.dataset.normalized === "1" || /[:h]/.test(text));
+
+    unit.textContent = meansHours ? "hr" : "min";
+}
+
+function setTimeInputMinutes(input, minutes) {
+
+    input.value = formatMinutesForInput(minutes);
+    input.dataset.normalized = "1";
+    input.dataset.minutes = String(minutes);
+
+    updateTimeInputUnit(input);
+}
+
+function normalizeTimeInput(input) {
+
+    const text = input.value.trim();
+
+    if (!text) {
+        input.dataset.normalized = "0";
+        updateTimeInputUnit(input);
+        return;
+    }
+
+    const minutes = getTimeInputMinutes(input);
+
+    if (minutes === null) {
+        input.value = "";
+        input.dataset.normalized = "0";
+        updateTimeInputUnit(input);
+        return;
+    }
+
+    setTimeInputMinutes(input, minutes);
+}
+
+function stepTimeInput(input, delta) {
+
+    const current = getTimeInputMinutes(input);
+
+    const base = current === null ? 0 : Math.floor(current);
+
+    setTimeInputMinutes(input, Math.max(0, base + delta));
+}
+
+function setupTimeInput(input) {
+
+    if (!input || input.dataset.timeInput) return;
+
+    const wrapper = input.parentElement;
+
+    input.dataset.timeInput = "1";
+    input.dataset.normalized = "0";
+
+    input.type = "text";
+    input.inputMode = "numeric";
+    input.autocomplete = "off";
+    input.removeAttribute("min");
+
+    input.addEventListener("input", () => {
+        input.dataset.normalized = "0";
+        updateTimeInputUnit(input);
+    });
+
+    input.addEventListener("blur", () => normalizeTimeInput(input));
+
+    input.addEventListener("focus", () => {
+        setTimeout(() => {
+            try { input.select(); } catch {}
+        }, 0);
+    });
+
+    input.addEventListener("keydown", event => {
+
+        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+
+            event.preventDefault();
+
+            const size = event.shiftKey ? 10 : 1;
+
+            stepTimeInput(input, event.key === "ArrowUp" ? size : -size);
+
+        } else if (event.key === "Enter") {
+
+            normalizeTimeInput(input);
+        }
+    });
+
+    if (!wrapper || wrapper.querySelector(".time-stepper")) return;
+
+    const stepper = document.createElement("div");
+
+    stepper.className = "time-stepper";
+
+    stepper.innerHTML = `
+        <button type="button" tabindex="-1" data-dir="1" aria-label="More time">${TIME_STEPPER_ARROW_UP}</button>
+        <button type="button" tabindex="-1" data-dir="-1" aria-label="Less time">${TIME_STEPPER_ARROW_DOWN}</button>
+    `;
+
+    stepper.querySelectorAll("button").forEach(button => {
+
+        const direction = Number(button.dataset.dir);
+
+        let delayTimer = null;
+        let repeatTimer = null;
+        let ticks = 0;
+
+        const stop = () => {
+            clearTimeout(delayTimer);
+            clearInterval(repeatTimer);
+            delayTimer = null;
+            repeatTimer = null;
+            ticks = 0;
+        };
+
+        /* Keep focus in the box while the arrows are used. */
+        button.addEventListener("mousedown", event => event.preventDefault());
+
+        button.addEventListener("pointerdown", event => {
+
+            event.preventDefault();
+
+            stop();
+
+            stepTimeInput(input, direction);
+
+            /* Hold the arrow to keep going — faster after a moment. */
+            delayTimer = setTimeout(() => {
+
+                repeatTimer = setInterval(() => {
+
+                    ticks++;
+
+                    stepTimeInput(input, direction * (ticks > 25 ? 5 : 1));
+
+                }, 70);
+
+            }, 400);
+        });
+
+        ["pointerup", "pointerleave", "pointercancel"].forEach(name =>
+            button.addEventListener(name, stop)
+        );
+    });
+
+    wrapper.appendChild(stepper);
+}
+
+function initTimeInputs() {
+
+    ensureTimeInputStyles();
+
+    TIME_INPUT_IDS.forEach(id =>
+        setupTimeInput(document.getElementById(id))
+    );
 }
 
 
@@ -815,7 +1213,7 @@ function buildTaskItemElement(task, targetTaskId = null) {
                 ${
                     task.focusTime
                         ? `<span class="task-focus-label">
-                            ${task.focusTime} min focus
+                            ${formatMinutesLabel(task.focusTime)} focus
                            </span>`
                         : ""
                 }
@@ -823,7 +1221,7 @@ function buildTaskItemElement(task, targetTaskId = null) {
                 ${
                     task.breakTime
                         ? `<span class="task-focus-label">
-                            ${task.breakTime} min break
+                            ${formatMinutesLabel(task.breakTime)} break
                            </span>`
                         : ""
                 }
@@ -2437,7 +2835,77 @@ function loadSavedBackground() {
    database built for this.
 ========================================================= */
 
-const ACCEPTED_MUSIC_EXTENSIONS = [".mp3", ".mp4"];
+/*
+ * Any normal song is welcome — not only MP3/MP4. The list below
+ * covers what phones and music apps actually save (MP3, M4A/AAC,
+ * WAV, OGG/OPUS, FLAC, MP4 ...). A file is also accepted when its
+ * own type says it is audio or video, whatever its extension is.
+ */
+const MUSIC_MIME_BY_EXTENSION = {
+    ".mp3": "audio/mpeg",
+    ".mp4": "video/mp4",
+    ".m4a": "audio/mp4",
+    ".m4b": "audio/mp4",
+    ".aac": "audio/aac",
+    ".wav": "audio/wav",
+    ".ogg": "audio/ogg",
+    ".oga": "audio/ogg",
+    ".opus": "audio/ogg",
+    ".flac": "audio/flac",
+    ".weba": "audio/webm",
+    ".webm": "audio/webm",
+    ".3gp": "audio/3gpp",
+    ".3gpp": "audio/3gpp",
+    ".aif": "audio/aiff",
+    ".aiff": "audio/aiff",
+    ".caf": "audio/x-caf",
+    ".mka": "audio/x-matroska"
+};
+
+const ACCEPTED_MUSIC_EXTENSIONS = Object.keys(MUSIC_MIME_BY_EXTENSION);
+
+/*
+ * What the "Add Music" file picker offers. "audio/*" makes phones
+ * open their normal audio browser (Downloads, Drive, music-app
+ * folders, SD card ...) instead of only videos; the extensions
+ * are listed too so MP4 and the other formats stay selectable.
+ */
+const MUSIC_FILE_INPUT_ACCEPT =
+    "audio/*,video/mp4," + ACCEPTED_MUSIC_EXTENSIONS.join(",");
+
+function configureMusicFileInput() {
+
+    const fileInput = document.getElementById("musicFileInput");
+
+    if (!fileInput) return;
+
+    fileInput.setAttribute("accept", MUSIC_FILE_INPUT_ACCEPT);
+    fileInput.multiple = true;
+}
+
+function getFileExtension(name) {
+
+    const lower = String(name || "").toLowerCase();
+    const dot = lower.lastIndexOf(".");
+
+    return dot >= 0 ? lower.slice(dot) : "";
+}
+
+/*
+ * Gives the saved song a proper audio type. Some phones hand
+ * over songs with an empty type, which can make playback fail
+ * later — so when the type is missing, it is set from the extension.
+ */
+function getMusicMimeType(file) {
+
+    const type = String(file.type || "").toLowerCase();
+
+    if (type.startsWith("audio/") || type.startsWith("video/")) {
+        return type;
+    }
+
+    return MUSIC_MIME_BY_EXTENSION[getFileExtension(file.name)] || "audio/mpeg";
+}
 
 const MUSIC_DB_NAME = "focusLabMusicDB";
 const MUSIC_DB_VERSION = 1;
@@ -2768,16 +3236,14 @@ function triggerAddMusic() {
 
 function isAcceptedMusicFile(file) {
 
-    const name = (file.name || "").toLowerCase();
+    const type = String(file.type || "").toLowerCase();
 
     const hasAcceptedExtension =
-        ACCEPTED_MUSIC_EXTENSIONS.some(ext => name.endsWith(ext));
+        ACCEPTED_MUSIC_EXTENSIONS.includes(getFileExtension(file.name));
 
     const hasAcceptedType =
-        file.type === "audio/mpeg" ||
-        file.type === "audio/mp3" ||
-        file.type === "video/mp4" ||
-        file.type === "audio/mp4";
+        type.startsWith("audio/") ||
+        type === "video/mp4";
 
     return hasAcceptedExtension || hasAcceptedType;
 }
@@ -2785,7 +3251,7 @@ function isAcceptedMusicFile(file) {
 /*
  * Accepts one, a few, or well over a thousand files at once
  * (the file input has the "multiple" attribute) and stores
- * every valid MP3/MP4 straight into IndexedDB as a Blob —
+ * every valid audio file straight into IndexedDB as a Blob —
  * no size-limited base64 copy, no cap on how many songs the
  * playlist can hold.
  */
@@ -2801,7 +3267,7 @@ async function handleMusicFileSelected(event) {
     const rejectedCount = files.length - accepted.length;
 
     if (!accepted.length) {
-        alert("Please choose MP3 or MP4 audio files.");
+        alert("Please choose audio files (MP3, M4A, WAV, OGG, FLAC, MP4 ...).");
         return;
     }
 
@@ -2812,9 +3278,16 @@ async function handleMusicFileSelected(event) {
 
         const id = createTaskId();
 
+        const mimeType = getMusicMimeType(file);
+
+        const blob =
+            file.type === mimeType
+                ? file
+                : file.slice(0, file.size, mimeType);
+
         await musicAddTrack(
             { id, name: file.name, addedAt: addedAt++ },
-            file
+            blob
         );
 
         if (!firstNewTrackId) {
@@ -2825,7 +3298,7 @@ async function handleMusicFileSelected(event) {
     await renderMusicList();
 
     if (rejectedCount > 0) {
-        alert(`${rejectedCount} file(s) were skipped — only MP3 and MP4 audio files are supported.`);
+        alert(`${rejectedCount} file(s) were skipped — they aren't audio files.`);
     }
 
     const isPlaying =
@@ -2944,6 +3417,8 @@ async function playMusicTrack(trackId) {
 
     currentMusicAudioEl.loop = true;
 
+    watchMusicPlaybackError(currentMusicAudioEl);
+
     currentMusicAudioEl
         .play()
         .catch(() => {
@@ -2956,6 +3431,27 @@ async function playMusicTrack(trackId) {
     localStorage.setItem("focusLab_musicStartedAt", String(Date.now()));
 
     startMusicPositionSaver();
+}
+
+/*
+ * If the browser can't decode a song (a rare audio format),
+ * say so once instead of failing silently.
+ */
+function watchMusicPlaybackError(audioEl) {
+
+    audioEl.addEventListener("error", () => {
+
+        if (audioEl !== currentMusicAudioEl) return;
+
+        localStorage.setItem("focusLab_musicPlaying", "false");
+
+        stopMusicPositionSaver();
+
+        renderMusicList();
+
+        alert("This song's format can't be played by your browser. Try an MP3 or M4A version of it.");
+
+    }, { once: true });
 }
 
 function pauseMusic() {
@@ -3604,6 +4100,10 @@ document.addEventListener(
         if (isVideosPage()) {
             renderVideoGrid();
         }
+
+        initTimeInputs();
+
+        configureMusicFileInput();
 
         setupTaskSearchInput("homeTaskSearch", "homeTaskSearchSuggestions");
         setupTaskSearchInput("navTaskSearch", "navTaskSearchSuggestions");
